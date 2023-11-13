@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingButton } from "../loadingButton";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { INote } from "../../api/types";
+import { INote } from "../../types/Note";
 import { updateNoteFn } from "../../api/noteApi";
 
 type IUpdateNoteProps = {

@@ -2,7 +2,6 @@ import "react-toastify/dist/ReactToastify.css";
 import {
   QueryClient,
   QueryClientProvider,
-  useQuery,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect, useState } from "react";
@@ -12,46 +11,38 @@ import NoteModal from "./components/note.modal";
 import CreateNote from "./components/notes/create.note";
 import NoteItem from "./components/notes/note.component";
 import NProgress from "nprogress";
-import {INote} from "./api/types";
+import {INote} from "./types/Note";
 
 function AppContent() {
   const [openNoteModal, setOpenNoteModal] = useState(false);
-  const [notes, setNotes] = useState<INote[] | null>(null);
-  // const [note, setNote] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   
+  const [notes, setNotes] = useState<INote[] | null>(null);
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchData() {
       try {
-        setIsLoading(true);
-        setIsFetching(true);
-        getNotes().then((res) => {
-          if (!res) {
-            return;
-          }
+        const response = await getNotesFn();
 
-          setNotes(res);
-          // console.log(res);
-        });
-        // const notesData = await getNotes();
-        // console.log(notesData)
-        // if (notesData) {
-        //   // const getSingleNote = await getNotesId(notesData[0]?.note[0]?.id);
-        //   setNotes(notesData);
-        // }
-        console.log(notes);
+        console.log("Response: ",response);
+        if (response){
+          const n = response.map((note) => note.expand?.note! ? note.expand?.note! : []).flat();
+          console.log("note:",n);
+          if (n) {
+            setNotes(n);
+          }
+        }
       } catch (error) {
-        console.error(`Error getting notes: ${error}`) 
+        console.error('Error al obtener las notas:', error);
       } finally {
         setIsLoading(false);
         setIsFetching(false);
         NProgress.done();
       }
-    };
-  
+    }
     fetchData();
-  }, [notes]);
+  }, []);
+
   return (
     <div className="2xl:max-w-[90rem] max-w-[68rem] mx-auto">
       <div className="m-8 grid grid-cols-[repeat(auto-fill,_320px)] gap-7 grid-rows-[1fr]">
@@ -71,17 +62,17 @@ function AppContent() {
         </div>
         {/* Note Items */}
 
-        {/* {notes?.map((note) => (
+         {notes?.map((note) => (
           <NoteItem key={note.id} note={note} />
         ))}
-
+    
         <NoteModal
           openNoteModal={openNoteModal}
           setOpenNoteModal={setOpenNoteModal}
         >
           
-          *<CreateNote setOpenNoteModal={setOpenNoteModal} />
-        </NoteModal> */}
+          <CreateNote setOpenNoteModal={setOpenNoteModal} />
+        </NoteModal> 
       </div>
     </div>
   );

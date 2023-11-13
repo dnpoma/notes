@@ -1,5 +1,5 @@
 import { pb } from "../utils/pocketbase";
-import { INote, INoteResponse, INotesResponse } from "./types";
+import { INote, INoteResponse, INotesResponse } from "../types/Note";
 import { CreateNoteInput } from "../components/notes/create.note";
 import { UpdateNoteInput } from "../components/notes/update.note";
 
@@ -8,7 +8,7 @@ export async function getNotesFn(): Promise<INotesResponse[] | null> {
     const records = await pb
       .collection("INoteResponse")
       .getFullList<INotesResponse>({
-        sort: "-created",
+        expand: "note"
       });
     return records || null;
   } catch (error) {
@@ -44,9 +44,16 @@ export async function createNoteFn(
   data: CreateNoteInput
 ): Promise<INoteResponse | null> {
   try {
+    const note = await pb.collection("INote").create<INote>(data);
+
     const response = await pb
       .collection("INoteResponse")
-      .create<INoteResponse>(data);
+      .create<INoteResponse>({
+        status: "created",
+        note: [
+          note.id
+        ]
+      });
     return response;
   } catch (error) {
     throw error;
@@ -59,7 +66,7 @@ export async function updateNoteFn(
 ): Promise<INoteResponse | null> {
   try {
     const response = await pb
-      .collection("INoteResponse")
+      .collection("INote")
       .update<INoteResponse>(noteId, note);
     return response;
   } catch (error) {
@@ -69,7 +76,7 @@ export async function updateNoteFn(
 
 export async function deleteNoteFn(noteId: string) {
   try {
-    const response = await pb.collection("INoteResponse").delete(noteId);
+    const response = await pb.collection("INote").delete(noteId);
     return response;
   } catch (error) {
     throw error;

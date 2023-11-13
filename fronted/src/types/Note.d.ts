@@ -19,14 +19,8 @@ export type INoteResponse = {
 export type INotesResponse = {
   status: string;
   results: number;
-  note: INote[];
+  note: string[];
   expand?: {
-    note:{
-      id: string;
-      title: string;
-      content: string;
-      createdAt: Date;
-      updatedAt: Date;
-    }
+    note: INote[]
   }
 };

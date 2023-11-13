@@ -6,7 +6,7 @@ import UpdateNote from "./update.note";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import NProgress from "nprogress";
-import { INote } from "../../api/types";
+import { INote } from "../../types/Note";
 import { deleteNoteFn } from "../../api/noteApi";
 
 type NoteItemProps = {
@@ -85,7 +85,7 @@ const NoteItem: FC<NoteItemProps> = ({ note }) => {
         </div>
         <div className="relative border-t border-slate-300 flex justify-between items-center">
           <span className="text-ct-dark-100 text-sm">
-            {format(parseISO(String(note.createdAt)), "PPP")}
+            
           </span>
           <div
             onClick={() => setOpenSettings(!openSettings)}
