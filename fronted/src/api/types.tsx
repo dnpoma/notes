@@ -1,0 +1,32 @@
+export type INote = {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type IGenericResponse = {
+  status: string;
+  message: string;
+};
+
+export type INoteResponse = {
+  status: string;
+  note: INote;
+};
+
+export type INotesResponse = {
+  status: string;
+  results: number;
+  note: INote[];
+  expand?: {
+    note:{
+      id: string;
+      title: string;
+      content: string;
+      createdAt: Date;
+      updatedAt: Date;
+    }
+  }
+};
